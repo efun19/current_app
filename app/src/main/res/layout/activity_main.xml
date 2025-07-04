@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button_overlay"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="开启悬浮窗权限"
+        tools:ignore="MissingConstraints"
+        android:layout_marginTop="50dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/> <!-- 添加顶部约束 -->
+
+    <Button
+        android:id="@+id/button_usage"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="开启使用记录访问权限"
+        tools:ignore="MissingConstraints"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_overlay"
+        app:layout_constraintVertical_bias="0.5"/>
+
+    <Button
+        android:id="@+id/button_float"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="启动悬浮窗"
+        tools:ignore="MissingConstraints"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_usage"
+        app:layout_constraintVertical_bias="0.5"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
