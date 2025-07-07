@@ -52,27 +52,32 @@ public class MainActivity extends AppCompatActivity {
                 stopFloatingWindow();
                 button3.setText("启动悬浮窗");
             } else {
-                startFloatingWindow();
-                button3.setText("关闭悬浮窗");
+                if (hasAllPermissions()) {
+                    startFloatingWindow();
+                    button3.setText("关闭悬浮窗");
+                }
             }
         });
+    }
+
+    private boolean hasAllPermissions() {
+        // 1. 检查权限
+        if (!PermissionUtil.hasOverlayPermission(this)) {
+            ToastUtil.showOverlayToast(false, this);
+            return false;
+        }
+
+        if (!PermissionUtil.hasUsageStatsPermission(this)) {
+            ToastUtil.showUsageStatsToast(false, this);
+            return false;
+        }
+        return true;
     }
 
     /**
      * 启动悬浮窗服务
      */
     public void startFloatingWindow() {
-        // 1. 检查权限
-        if (!PermissionUtil.hasOverlayPermission(this)) {
-            ToastUtil.showOverlayToast(false, this);
-            return;
-        }
-
-        if (!PermissionUtil.hasUsageStatsPermission(this)) {
-            ToastUtil.showUsageStatsToast(false, this);
-            return;
-        }
-
         // 2. 启动服务（Android 8.0+需使用前台服务）
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, FloatingWindowService.class));
