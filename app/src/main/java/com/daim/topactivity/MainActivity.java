@@ -1,12 +1,24 @@
 package com.daim.topactivity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 /**
@@ -20,41 +32,48 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        transparentStatusBar();
         setContentView(R.layout.activity_main);
         initView();
     }
 
-    private void initView(){
-        Button button = findViewById(R.id.button_overlay);
-        button.setOnClickListener(v -> {
-            if (!PermissionUtil.hasOverlayPermission(this)) {
-                PermissionUtil.requestOverlayPermission(this, REQUEST_CODE_OVERLAY);
-            } else {
-                ToastUtil.showOverlayToast(true, this);
-            }
-        });
-
-        Button button2 = findViewById(R.id.button_usage);
-        button2.setOnClickListener(v -> {
-            if (!PermissionUtil.hasUsageStatsPermission(this)) {
-                PermissionUtil.requestUsageStatsPermission(this, REQUEST_CODE_USAGE_STATS);
-            } else {
-                ToastUtil.showUsageStatsToast(true, this);
-            }
-        });
-
-        Button button3 = findViewById(R.id.button_float);
-        if (isFloatingWindowShowing(this)) {
-            button3.setText("关闭悬浮窗");
+    private void transparentStatusBar() {
+        // 使状态栏透明
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
         }
-        button3.setOnClickListener(v -> {
+    }
+
+    private void initView() {
+        setToolbar();
+        setButton();
+    }
+
+    private void  setToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.inflateMenu(R.menu.main);
+        setSupportActionBar(toolbar);
+    }
+
+    private void setButton() {
+        Button button = findViewById(R.id.button_float);
+        if (isFloatingWindowShowing(this)) {
+            button.setText("关闭悬浮窗");
+        }
+        button.setOnClickListener(v -> {
             if (isFloatingWindowShowing(this)) {
                 stopFloatingWindow();
-                button3.setText("启动悬浮窗");
+                button.setText("启动悬浮窗");
             } else {
                 if (hasAllPermissions()) {
                     startFloatingWindow();
-                    button3.setText("关闭悬浮窗");
+                    button.setText("关闭悬浮窗");
                 }
             }
         });
@@ -95,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 检查悬浮窗服务是否正在运行
+     *
      * @param context
      * @return
      */
@@ -121,5 +141,31 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_USAGE_STATS) {
             ToastUtil.showUsageStatsToast(PermissionUtil.hasUsageStatsPermission(this), this);
         }
+    }
+
+    @Override
+    public boolean onCreatePanelMenu(int featureId, @NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.item_overlay) {
+            if (!PermissionUtil.hasOverlayPermission(this)) {
+                PermissionUtil.requestOverlayPermission(this, REQUEST_CODE_OVERLAY);
+            } else {
+                ToastUtil.showOverlayToast(true, this);
+            }
+        } else if (itemId == R.id.item_usage) {
+            if (!PermissionUtil.hasUsageStatsPermission(this)) {
+                PermissionUtil.requestUsageStatsPermission(this, REQUEST_CODE_USAGE_STATS);
+            } else {
+                ToastUtil.showUsageStatsToast(true, this);
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
