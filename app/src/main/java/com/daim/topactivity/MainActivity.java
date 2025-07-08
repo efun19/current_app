@@ -72,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Button button2 = findViewById(R.id.button_act2);
+        button2.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, ListActivity.class));
+        });
+
     }
 
     private boolean hasAllPermissions() {
