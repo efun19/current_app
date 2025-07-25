@@ -19,7 +19,7 @@ public class PackageInfoUtil {
     private static final String TAG = "PackageInfoUtil";
 
     /**
-     * 获取应用信息
+     * 获取应用信息 需要权限：android.permission.QUERY_ALL_PACKAGES
      * @param context
      */
     public static void getPackageInfo(Context context) {
@@ -28,6 +28,7 @@ public class PackageInfoUtil {
         PackageManager packageManager = context.getApplicationContext().getPackageManager();
         List<String> packageList = new ArrayList<>();
         for (ResolveInfo appInfo: mApps) {
+            Log.d("ljm123", "getPackageInfo: " + appInfo.activityInfo.packageName);
             if (packageList.contains(appInfo.activityInfo.packageName)) {
                 continue;
             }
